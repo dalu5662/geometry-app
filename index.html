@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+  <title>几何乐园·小学数学</title>
+  
+  <!-- 引用外部manifest -->
+  <link rel="manifest" href="manifest.json">
+  
+  <!-- 苹果设备图标 -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  
+  <!-- 备用favicon -->
+  <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="icons/icon-512.png">
+  
+  <!-- PWA必要meta -->
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#4fc3f7">
+  
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      background: linear-gradient(135deg, #4fc3f7 0%, #ff8a65 100%);
+      font-family: 'Comic Sans MS', 'Chalkboard SE', '幼圆', Yuanti SC, system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      padding: 15px;
+    }
+    
+    .app-container {
+      max-width: 1000px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 60px 60px 40px 40px;
+      padding: 25px 20px;
+      box-shadow: 0 30px 40px rgba(0,0,0,0.2), 0 0 0 5px #ffd93d;
+      backdrop-filter: blur(10px);
+      position: relative;
+    }
+    
+    .app-container::before {
+      content: '🔺 ⬛ ⚪';
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 30px;
+      background: #ffd93d;
+      padding: 5px 25px;
+      border-radius: 50px;
+      box-shadow: 0 5px 0 #ff9f4b;
+    }
+    
+    .title-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin: 20px 0 15px 0;
+      background: #4fc3f7;
+      padding: 15px 25px;
+      border-radius: 60px;
+      border: 4px solid #ff8a65;
+    }
+    
+    .title-main {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    
+    .title-main span:first-child {
+      font-size: 3rem;
+      filter: drop-shadow(2px 4px 0 #ff6b6b);
+    }
+    
+    .title-main span:last-child {
+      font-size: 2rem;
+      font-weight: 800;
+      color: white;
+      text-shadow: 3px 3px 0 #ff8a65;
+    }
+    
+    .install-btn {
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 40px;
+      font-size: 1.2rem;
+      font-weight: 800;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      box-shadow: 0 6px 0 #b23b3b;
+      transition: 0.1s;
+      border: 3px solid white;
+      font-family: inherit;
+    }
+    
+    .install-btn:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+    
+    .install-btn.hidden {
+      display: none;
+    }
+    
+    .subtitle {
+      background: #ff8a65;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 40px;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      text-align: center;
+      border: 4px solid #4fc3f7;
+      box-shadow: 0 5px 0 #b26a00;
+    }
+    
+    .card {
+      background: #f8f9ff;
+      border-radius: 50px;
+      padding: 25px 20px;
+      margin: 20px 0;
+      border: 4px solid #4fc3f7;
+      box-shadow: 0 8px 0 #1e88e5;
+    }
+    
+    .flex-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      align-items: center;
+      justify-content: space-between;
+    }
+    
+    .timer-card {
+      background: #2c3e50;
+      color: #ffd93d;
+      border-radius: 50px;
+      padding: 15px 30px;
+      box-shadow: 0 8px 0 #1a2632;
+      border: 4px solid #ff8a65;
+    }
+    
+    .timer-display {
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: 8px;
+      font-family: 'Courier New', monospace;
+      text-shadow: 0 0 10px #ffd93d;
+    }
+    
+    button {
+      background: #4fc3f7;
+      border: none;
+      color: white;
+      font-weight: 800;
+      padding: 15px 30px;
+      border-radius: 50px;
+      font-size: 1.2rem;
+      box-shadow: 0 6px 0 #1e88e5;
+      cursor: pointer;
+      border: 3px solid white;
+      transition: 0.1s;
+      font-family: inherit;
+    }
+    
+    button:active {
+      transform: translateY(6px);
+      box-shadow: none;
+    }
+    
+    button:disabled {
+      opacity: 0.5;
+      transform: none;
+      box-shadow: 0 6px 0 #1e88e5;
+      pointer-events: none;
+    }
+    
+    .diff-pill {
+      display: flex;
+      background: white;
+      border-radius: 60px;
+      border: 4px solid #ff8a65;
+      overflow: hidden;
+    }
+    
+    .diff-pill label {
+      padding: 12px 28px;
+      cursor: pointer;
+      font-size: 1.2rem;
+      font-weight: 700;
+      transition: 0.1s;
+    }
+    
+    input[type="radio"] { display: none; }
+    input[type="radio"]:checked + span { 
+      background: #4fc3f7; 
+      color: white;
+      display: block;
+      padding: 12px 28px;
+      margin: -12px -28px;
+    }
+    
+    .ques-item {
+      background: #fff9e6;
+      border-radius: 40px;
+      padding: 20px;
+      margin-bottom: 15px;
+      border: 4px solid #4fc3f7;
+      box-shadow: 0 5px 0 #1e88e5;
+    }
+    
+    .ques-header {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .ques-text {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #4a4a4a;
+    }
+    
+    .meta-badge {
+      background: #4fc3f7;
+      color: white;
+      border-radius: 40px;
+      padding: 8px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      border: 3px solid white;
+    }
+    
+    .answer-area {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 15px;
+    }
+    
+    .ans-input {
+      width: 150px;
+      padding: 12px 20px;
+      border-radius: 50px;
+      border: 4px solid #ff8a65;
+      font-size: 1.2rem;
+      text-align: center;
+      font-family: inherit;
+    }
+    
+    .result-badge {
+      font-weight: 800;
+      padding: 10px 25px;
+      border-radius: 40px;
+      font-size: 1.1rem;
+      border: 3px solid white;
+    }
+    
+    .correct-badge { background: #8bc34a; color: white; }
+    .wrong-badge { background: #ff6b6b; color: white; }
+    .pending-badge { background: #ffd93d; color: #4a4a4a; }
+    
+    .hint-section {
+      margin-top: 15px;
+      border-top: 2px dashed #ff8a65;
+      padding-top: 15px;
+    }
+    
+    .child-hint {
+      background: #e3f2fd;
+      border-radius: 30px;
+      padding: 12px 18px;
+      font-size: 1.1rem;
+      border-left: 8px solid #2196f3;
+      color: #0d3c61;
+      margin-bottom: 10px;
+    }
+    
+    .parent-hint {
+      background: #fff3e0;
+      border-radius: 30px;
+      padding: 12px 18px;
+      font-size: 1rem;
+      border-left: 8px solid #ff9800;
+      color: #663c00;
+      margin-top: 10px;
+    }
+    
+    .parent-btn {
+      background: #ff9800;
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 3px 0 #b26a00;
+      transition: 0.1s;
+      border: 2px solid white;
+    }
+    
+    .parent-btn:active {
+      transform: translateY(3px);
+      box-shadow: none;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .history-panel {
+      background: #2c3e50;
+      color: #ffd93d;
+      border-radius: 40px;
+      padding: 20px;
+      font-size: 1rem;
+      max-height: 180px;
+      overflow-y: auto;
+      border: 4px solid #ff8a65;
+    }
+    
+    .mistake-panel {
+      background: #fff0f0;
+      border: 6px dashed #ff6b6b;
+      border-radius: 50px;
+      padding: 20px;
+      margin: 20px 0;
+    }
+    
+    .mistake-item {
+      background: white;
+      border-radius: 30px;
+      padding: 12px 18px;
+      margin-bottom: 10px;
+      border: 2px solid #ff6b6b;
+    }
+    
+    .footer-actions {
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      margin-top: 20px;
+    }
+    
+    hr {
+      border: 4px solid #4fc3f7;
+      border-radius: 10px;
+      margin: 30px 0;
+    }
+    
+    .deco-geometry {
+      display: flex;
+      justify-content: space-around;
+      margin: 10px 0;
+      font-size: 2rem;
+    }
+    
+    .offline-badge {
+      background: #ff6b6b;
+      color: white;
+      padding: 5px 15px;
+      border-radius: 30px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-left: 10px;
+      display: inline-block;
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="deco-geometry">
+    <span>🔺</span> <span>⬛</span> <span>⚪</span> <span>🔷</span> <span>📐</span>
+  </div>
+  
+  <div class="title-row">
+    <div class="title-main">
+      <span>📐</span>
+      <span>几何乐园</span>
+    </div>
+    <button class="install-btn" id="installBtn">
+      📲 安装到设备
+    </button>
+  </div>
+  
+  <div class="subtitle">
+    🌟 基础6类 · 🎯 奥数8类 · 📝 错题本 · 💡 双层提示
+    <span id="offlineIndicator" class="offline-badge" style="display:none;">📴 离线模式</span>
+  </div>
+
+  <div class="card">
+    <div class="flex-row">
+      <div class="diff-pill">
+        <label><input type="radio" name="diff" value="初级" checked><span>🐣 初级</span></label>
+        <label><input type="radio" name="diff" value="中级"><span>🦊 中级</span></label>
+        <label><input type="radio" name="diff" value="高级"><span>🦉 高级</span></label>
+      </div>
+      <button id="startBtn">🚀 开始20分钟挑战</button>
+    </div>
+    <div class="flex-row" style="margin-top: 25px;">
+      <div class="timer-card"><span class="timer-display" id="timer">20:00</span></div>
+      <button id="submitBtn" disabled>✅ 提交所有答案</button>
+    </div>
+  </div>
+
+  <div id="questionsContainer">
+    <div class="ques-item" style="text-align:center; padding:40px;">
+      🎮 点击"开始20分钟挑战"生成题目
+    </div>
+  </div>
+
+  <hr>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin: 20px 0;">
+    <h2 style="color:#4a4a4a; font-size:2rem;">📋 练习记录</h2>
+    <button id="clearMistakesBtn" style="background:#ff6b6b; box-shadow:0 6px 0 #b23b3b;">🗑️ 清空错题</button>
+  </div>
+  <div class="history-panel" id="historyLog">暂无练习记录</div>
+  <div class="mistake-panel" id="mistakeContainer">📕 还没有错题，继续加油！</div>
+
+  <div class="footer-actions">
+    <button id="exportBtn" style="background:#6c5ce7;">📎 导出错题</button>
+    <button id="demoBtn" style="background:#ff9f4b;">🧪 添加示例错题</button>
+    <span style="flex:1; text-align:right; font-size:1rem; color:#4a4a4a;">🐼 快乐学几何 v1.0</span>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ========== 注册 Service Worker ==========
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', function() {
+      navigator.serviceWorker.register('service-worker.js').then(function(registration) {
+        console.log('ServiceWorker 注册成功:', registration.scope);
+        if (!navigator.onLine) {
+          document.getElementById('offlineIndicator').style.display = 'inline-block';
+        }
+      }).catch(function(error) {
+        console.log('ServiceWorker 注册失败:', error);
+      });
+    });
+    
+    window.addEventListener('online', function() {
+      document.getElementById('offlineIndicator').style.display = 'none';
+    });
+    
+    window.addEventListener('offline', function() {
+      document.getElementById('offlineIndicator').style.display = 'inline-block';
+    });
+  }
+
+  // ========== 基础题库模板（6类） ==========
+  const BASE_TEMPLATES = [
+    {
+      type: "平面图形认识",
+      generate: () => {
+        const shapes = ["长方形", "正方形", "三角形", "圆形", "平行四边形"];
+        const features = ["对边相等且平行", "四边相等", "三条边", "没有角", "对边平行"];
+        const index = Math.floor(Math.random() * shapes.length);
+        return {
+          text: `🔺 下列图形中，${shapes[index]}的特征是什么？请选择：A. ${features[0]} B. ${features[1]} C. ${features[2]}`,
+          ans: String.fromCharCode(65 + index),
+          childHint: `🤔 想想${shapes[index]}有哪些特点？`,
+          parentHint: `${shapes[index]}的特征是：${features[index]}`
+        };
+      }
+    },
+    {
+      type: "周长计算",
+      generate: () => {
+        const length = Math.floor(Math.random() * 8) + 5; // 5-12
+        const width = Math.floor(Math.random() * 4) + 3; // 3-6
+        return {
+          text: `📏 一个长方形长${length}厘米，宽${width}厘米，它的周长是多少厘米？`,
+          ans: (length + width) * 2,
+          childHint: `🤔 长方形周长 = (长 + 宽) × 2`,
+          parentHint: `(${length} + ${width}) × 2 = ${(length + width) * 2}厘米`
+        };
+      }
+    },
+    {
+      type: "面积计算",
+      generate: () => {
+        const side = Math.floor(Math.random() * 7) + 4; // 4-10
+        return {
+          text: `📐 一个正方形边长${side}厘米，它的面积是多少平方厘米？`,
+          ans: side * side,
+          childHint: `🤔 正方形面积 = 边长 × 边长`,
+          parentHint: `${side} × ${side} = ${side * side}平方厘米`
+        };
+      }
+    },
+    {
+      type: "图形拼组",
+      generate: () => {
+        return {
+          text: `🧩 两个完全相同的等腰直角三角形可以拼成什么图形？ A. 正方形 B. 长方形 C. 梯形`,
+          ans: "A",
+          childHint: `🤔 等腰直角三角形的两个直角边相等，拼在一起会形成什么？`,
+          parentHint: `两个等腰直角三角形可以拼成一个正方形`
+        };
+      }
+    },
+    {
+      type: "角的初步认识",
+      generate: () => {
+        const angles = [30, 45, 60, 90, 120, 150];
+        const index = Math.floor(Math.random() * angles.length);
+        const type = angles[index] < 90 ? "锐角" : angles[index] === 90 ? "直角" : "钝角";
+        return {
+          text: `📐 ${angles[index]}°的角是什么角？ A. 锐角 B. 直角 C. 钝角`,
+          ans: type === "锐角" ? "A" : type === "直角" ? "B" : "C",
+          childHint: `🤔 小于90°是锐角，等于90°是直角，大于90°是钝角`,
+          parentHint: `${angles[index]}°是${type}`
+        };
+      }
+    },
+    {
+      type: "立体图形认识",
+      generate: () => {
+        const shapes = ["长方体", "正方体", "圆柱", "圆锥", "球"];
+        const index = Math.floor(Math.random() * shapes.length);
+        return {
+          text: `🧊 魔方是什么形状？ A. 长方体 B. 正方体 C. 圆柱`,
+          ans: "B",
+          childHint: `🤔 魔方的六个面都是正方形，而且大小相等`,
+          parentHint: `魔方是正方体`
+        };
+      }
+    }
+  ];
+
+  // ========== 奥数题库模板（8类） ==========
+  const OLYMPIC_TEMPLATES = [
+    {
+      type: "等积变换",
+      generate: () => {
+        const base = Math.floor(Math.random() * 4) + 6; // 6-9
+        const height = Math.floor(Math.random() * 3) + 4; // 4-6
+        return {
+          text: `📐 三角形ABC面积是${(base * height / 2)}，底BC长${base}，高${height}。D是BC中点，E是AC中点，求三角形ADE的面积。`,
+          ans: (base * height / 2) / 4,
+          childHint: `🤔 连接中点，三角形面积被等分成4份`,
+          parentHint: `三角形ADE是原三角形面积的1/4 = ${(base * height / 2) / 4}`
+        };
+      }
+    },
+    {
+      type: "几何模型应用",
+      generate: () => {
+        return {
+          text: `🦋 梯形ABCD中，AD:BC=1:2，对角线交于O，三角形AOD面积是5，求梯形ABCD面积。`,
+          ans: 45,
+          childHint: `🤔 蝴蝶模型中，上下两个三角形面积比等于对应边比的平方`,
+          parentHint: `S△AOD:S△COB = 1:4，S△AOB=S△COD=√(1×4)×5=10，总面积=5+20+10+10=45`
+        };
+      }
+    },
+    {
+      type: "格点与面积",
+      generate: () => {
+        return {
+          text: `🔲 在4×4的方格纸中，顶点都在格点上的一个多边形，内部格点3个，边上格点6个，面积是多少？（皮克定理）`,
+          ans: 6,
+          childHint: `🤔 皮克定理：面积 = 内部格点数 + 边上格点数÷2 - 1`,
+          parentHint: `3 + 6÷2 - 1 = 3 + 3 - 1 = 6`
+        };
+      }
+    },
+    {
+      type: "圆与扇形",
+      generate: () => {
+        const r = Math.floor(Math.random() * 3) + 2; // 2-4
+        return {
+          text: `⚪ 一个圆的半径是${r}厘米，它的周长是多少厘米？（π取3.14）`,
+          ans: Math.round(2 * 3.14 * r * 100) / 100,
+          childHint: `🤔 圆周长 = 2πr`,
+          parentHint: `2 × 3.14 × ${r} = ${Math.round(2 * 3.14 * r * 100) / 100}厘米`
+        };
+      }
+    },
+    {
+      type: "立体图形进阶",
+      generate: () => {
+        return {
+          text: `🧊 一个长方体长5厘米，宽4厘米，高3厘米，表面涂色后切成1立方厘米的小正方体，三面涂色的有几个？`,
+          ans: 8,
+          childHint: `🤔 三面涂色的是顶点处的小方块`,
+          parentHint: `长方体有8个顶点，每个顶点处有1个三面涂色，共8个`
+        };
+      }
+    },
+    {
+      type: "图形分割与拼补",
+      generate: () => {
+        return {
+          text: `🧩 求下图阴影部分的面积：一个边长为8的正方形，以四个顶点为圆心画半径为4的四分之一圆，中间重叠部分面积？`,
+          ans: 64 - (3.14 * 16),
+          childHint: `🤔 阴影面积 = 正方形面积 - 四个扇形面积之和（正好是一个圆）`,
+          parentHint: `64 - 3.14 × 16 = 64 - 50.24 = 13.76`
+        };
+      }
+    },
+    {
+      type: "正方体展开图",
+      generate: () => {
+        return {
+          text: `📦 下列哪个图形可以折叠成正方体？ A. 1-4-1型 B. 2-3-1型 C. 2-2-2型 D. 3-3型 E. 以上都是`,
+          ans: "E",
+          childHint: `🤔 正方体展开图共有11种，分为4种类型`,
+          parentHint: `1-4-1型、2-3-1型、2-2-2型、3-3型都是正确的展开图`
+        };
+      }
+    },
+    {
+      type: "几何计数",
+      generate: () => {
+        return {
+          text: `🔢 图中共有多少个三角形？一个由4个小三角形组成的六边形图形。`,
+          ans: 8,
+          childHint: `🤔 先数单个小三角形，再数由2个、4个小三角形组成的三角形`,
+          parentHint: `单个4个 + 2个组成的2个 + 4个组成的2个 = 8个`
+        };
+      }
+    }
+  ];
+
+  function generateQuestionsFromTemplates(templates, count) {
+    const shuffled = [...templates];
+    for (let i = shuffled.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    }
+    return shuffled.slice(0, count).map(template => {
+      const generated = template.generate();
+      return {
+        ...generated,
+        mainCat: BASE_TEMPLATES.includes(template) ? "基础题" : "奥数题",
+        subCat: template.type,
+        userAnswer: null,
+        isCorrect: null
+      };
+    });
+  }
+
+  window.toggleParentHint = function(idx) {
+    const hintDiv = document.getElementById(`parentHint_${idx}`);
+    if (hintDiv) hintDiv.classList.toggle('hidden');
+  };
+
+  const app = {
+    currentQuestions: [],
+    timerInterval: null,
+    secondsLeft: 1200,
+    active: false,
+    difficulty: '初级',
+    mistakeList: [],
+    deferredPrompt: null,
+    submitted: false,
+    BASE_TEMPLATES: BASE_TEMPLATES,
+    OLYMPIC_TEMPLATES: OLYMPIC_TEMPLATES,
+
+    init: function() {
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        this.deferredPrompt = e;
+      });
+
+      document.getElementById('installBtn').addEventListener('click', () => {
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const isAndroid = /Android/.test(navigator.userAgent);
+        
+        let message = '';
+        if (isIOS) {
+          message = '📱 在iPad/iPhone上安装：\n\n1. 点击底部中间的「分享」按钮 📤\n2. 向下滑动，选择「添加到主屏幕」\n3. 点击右上角「添加」';
+        } else if (isAndroid) {
+          message = '📱 在安卓手机上安装：\n\n1. 点击右上角菜单「⋯」\n2. 选择「添加到主屏幕」\n3. 点击「自动添加」';
+        } else {
+          message = '💻 在电脑上安装：\n\n1. 点击地址栏右侧的「安装」图标 ➕\n2. 或者点击右上角菜单「⋯」→「应用」→「将此站点作为应用安装」';
+        }
+        alert(message);
+      });
+
+      document.getElementById('startBtn').addEventListener('click', () => this.startNew());
+      document.getElementById('submitBtn').addEventListener('click', () => this.submitAll());
+      document.getElementById('clearMistakesBtn').addEventListener('click', () => this.clearMistakes());
+      document.getElementById('exportBtn').addEventListener('click', () => this.exportMistakes());
+      document.getElementById('demoBtn').addEventListener('click', () => this.addDemoMistake());
+
+      document.querySelectorAll('input[name="diff"]').forEach(r => {
+        r.addEventListener('change', (e) => { this.difficulty = e.target.value; });
+      });
+
+      this.loadMistakes();
+    },
+
+    startNew: function() {
+      if(this.timerInterval) clearInterval(this.timerInterval);
+      this.secondsLeft = 1200;
+      this.active = true;
+      this.submitted = false;
+      this.updateTimer();
+      this.generatePaper();
+      this.timerInterval = setInterval(() => this.tick(), 1000);
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('startBtn').disabled = true;
+      this.addLog(`▶ 开始 ${this.difficulty} 难度练习`);
+    },
+
+    tick: function() {
+      if(!this.active) return;
+      this.secondsLeft--;
+      this.updateTimer();
+      if(this.secondsLeft <= 0) {
+        this.secondsLeft = 0;
+        this.updateTimer();
+        this.active = false;
+        clearInterval(this.timerInterval);
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('submitBtn').disabled = true;
+        this.addLog("⌛ 时间到，练习结束");
+      }
+    },
+
+    updateTimer: function() {
+      const m = Math.floor(this.secondsLeft / 60);
+      const s = this.secondsLeft % 60;
+      document.getElementById('timer').innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+    },
+
+    generatePaper: function() {
+      const totalQuestions = 6;
+      if (this.difficulty === '初级') {
+        this.currentQuestions = generateQuestionsFromTemplates(BASE_TEMPLATES, totalQuestions);
+      } else if (this.difficulty === '高级') {
+        this.currentQuestions = generateQuestionsFromTemplates(OLYMPIC_TEMPLATES, totalQuestions);
+      } else {
+        const baseCount = Math.floor(totalQuestions * 0.7);
+        const olympicCount = totalQuestions - baseCount;
+        const baseQuestions = generateQuestionsFromTemplates(BASE_TEMPLATES, baseCount);
+        const olympicQuestions = generateQuestionsFromTemplates(OLYMPIC_TEMPLATES, olympicCount);
+        this.currentQuestions = [...baseQuestions, ...olympicQuestions];
+        for (let i = this.currentQuestions.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [this.currentQuestions[i], this.currentQuestions[j]] = [this.currentQuestions[j], this.currentQuestions[i]];
+        }
+      }
+      this.renderQuestions();
+    },
+
+    renderQuestions: function() {
+      const container = document.getElementById('questionsContainer');
+      let html = '';
+      this.currentQuestions.forEach((q, idx) => {
+        let statusClass = 'pending-badge', statusText = '⏳ 待批';
+        if(q.isCorrect === true) { statusClass = 'correct-badge'; statusText = '✅ 正确'; }
+        else if(q.isCorrect === false) { statusClass = 'wrong-badge'; statusText = '❌ 错误'; }
+
+        const inputDisabled = (!this.active && this.secondsLeft <= 0) || this.submitted ? 'disabled' : '';
+
+        html += `<div class="ques-item">
+          <div class="ques-header">
+            <span class="ques-text">${idx+1}. ${q.text}</span>
+            <span class="meta-badge">${q.mainCat} · ${q.subCat}</span>
+          </div>
+          <div class="answer-area">
+            <input class="ans-input" type="text" id="ans_${idx}" placeholder="答案" value="${q.userAnswer||''}" ${inputDisabled}>
+            <span class="result-badge ${statusClass}">${statusText}</span>
+          </div>
+          ${q.isCorrect !== null ? `
+          <div class="hint-section">
+            <div class="child-hint">${q.childHint}</div>
+            <button class="parent-btn" onclick="toggleParentHint(${idx})">🔍 家长查看解析</button>
+            <div class="parent-hint hidden" id="parentHint_${idx}">📝 ${q.parentHint}</div>
+          </div>
+          ` : ''}
+        </div>`;
+      });
+      container.innerHTML = html;
+    },
+
+    submitAll: function() {
+      this.currentQuestions.forEach((q, idx) => {
+        const input = document.getElementById(`ans_${idx}`);
+        if(input) q.userAnswer = input.value.trim();
+      });
+
+      let correct = 0;
+      this.currentQuestions.forEach(q => {
+        let right = false;
+        if (typeof q.ans === 'number') {
+          right = Math.abs(parseFloat(q.userAnswer) - q.ans) < 0.01;
+        } else {
+          right = q.userAnswer.trim().toUpperCase() === q.ans.toString().toUpperCase();
+        }
+        q.isCorrect = right;
+        if(right) correct++;
+        else if(q.userAnswer) this.addMistake(q);
+      });
+      
+      const percent = ((correct/this.currentQuestions.length)*100).toFixed(1);
+      this.addLog(`📊 提交答案 - 正确率: ${correct}/${this.currentQuestions.length} (${percent}%)`);
+      
+      if(this.timerInterval) {
+        clearInterval(this.timerInterval);
+        this.timerInterval = null;
+      }
+      this.active = false;
+      this.submitted = true;
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('startBtn').disabled = false;
+      this.renderQuestions();
+    },
+
+    addMistake: function(q) {
+      const exists = this.mistakeList.some(m => m.text === q.text && m.correctAns === q.ans);
+      if (!exists) {
+        this.mistakeList.unshift({
+          text: q.text,
+          correctAns: q.ans,
+          mainCat: q.mainCat,
+          subCat: q.subCat,
+          childHint: q.childHint,
+          parentHint: q.parentHint,
+          date: new Date().toLocaleTimeString()
+        });
+        if(this.mistakeList.length > 20) this.mistakeList.pop();
+        this.saveMistakes();
+        this.updateMistakeUI();
+      }
+    },
+
+    updateMistakeUI: function() {
+      const div = document.getElementById('mistakeContainer');
+      if(!this.mistakeList.length) {
+        div.innerHTML = '📕 还没有错题，继续加油！';
+        return;
+      }
+      let html = '<strong>📕 错题本 (最近5条)</strong>';
+      this.mistakeList.slice(0,5).forEach(m => {
+        html += `<div class="mistake-item">
+          <div><b>${m.text}</b> 正确答案: ${m.correctAns} [${m.subCat}]</div>
+          <div class="child-hint" style="margin-top:8px;">🤔 ${m.childHint}</div>
+          <div class="parent-hint" style="margin-top:5px;">📝 ${m.parentHint}</div>
+          <div style="font-size:0.8rem; color:#999; margin-top:5px;">${m.date}</div>
+        </div>`;
+      });
+      div.innerHTML = html;
+    },
+
+    addLog: function(msg) {
+      const logDiv = document.getElementById('historyLog');
+      const entry = document.createElement('div');
+      entry.textContent = `[${new Date().toLocaleTimeString()}] ${msg}`;
+      logDiv.prepend(entry);
+      if(logDiv.children.length > 8) logDiv.removeChild(logDiv.lastChild);
+    },
+
+    clearMistakes: function() {
+      this.mistakeList = [];
+      this.saveMistakes();
+      this.updateMistakeUI();
+      this.addLog('🗑️ 清空错题本');
+    },
+
+    exportMistakes: function() {
+      alert(JSON.stringify(this.mistakeList, null, 2));
+    },
+
+    addDemoMistake: function() {
+      this.addMistake({
+        text: "📐 一个直角三角形，两条直角边分别是3和4，斜边是多少？",
+        ans: 5,
+        mainCat: "奥数题",
+        subCat: "勾股定理",
+        childHint: "🤔 直角三角形两直角边的平方和等于斜边的平方",
+        parentHint: "3² + 4² = 9 + 16 = 25，√25 = 5"
+      });
+    },
+
+    saveMistakes: function() {
+      localStorage.setItem('geometryMistakes', JSON.stringify(this.mistakeList));
+    },
+
+    loadMistakes: function() {
+      const data = localStorage.getItem('geometryMistakes');
+      if(data) this.mistakeList = JSON.parse(data);
+      this.updateMistakeUI();
+    }
+  };
+
+  window.app = app;
+  window.onload = () => app.init();
+})();
+</script>
+</body>
+</html>
