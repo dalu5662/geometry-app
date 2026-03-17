@@ -4,7 +4,7 @@
   "description": "小学数学几何题练习，包含基础6类和奥数8类",
   "start_url": "/index.html",
   "display": "standalone",
-  "background_color": "#4fc3f7",
+  "background_color": "#ffffff",
   "theme_color": "#ff8a65",
   "icons": [
     {
