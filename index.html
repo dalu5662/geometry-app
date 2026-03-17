@@ -19,7 +19,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#4fc3f7">
+  <meta name="theme-color" content="#ff8a65">
   
   <style>
     * {
@@ -68,10 +68,10 @@
       flex-wrap: wrap;
       gap: 15px;
       margin: 20px 0 15px 0;
-      background: #4fc3f7;
+      background: #ff8a65;
       padding: 15px 25px;
       border-radius: 60px;
-      border: 4px solid #ff8a65;
+      border: 4px solid #4fc3f7;
     }
     
     .title-main {
@@ -89,7 +89,7 @@
       font-size: 2rem;
       font-weight: 800;
       color: white;
-      text-shadow: 3px 3px 0 #ff8a65;
+      text-shadow: 3px 3px 0 #4fc3f7;
     }
     
     .install-btn {
@@ -120,7 +120,7 @@
     }
     
     .subtitle {
-      background: #ff8a65;
+      background: #4fc3f7;
       color: white;
       padding: 15px 25px;
       border-radius: 40px;
@@ -128,8 +128,8 @@
       font-size: 1.2rem;
       font-weight: 600;
       text-align: center;
-      border: 4px solid #4fc3f7;
-      box-shadow: 0 5px 0 #b26a00;
+      border: 4px solid #ff8a65;
+      box-shadow: 0 5px 0 #1e88e5;
     }
     
     .card {
@@ -271,6 +271,31 @@
       align-items: center;
       gap: 15px;
       margin: 15px 0;
+    }
+    
+    .options-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      margin: 10px 0;
+    }
+    
+    .options-group label {
+      background: #e3f2fd;
+      padding: 8px 16px;
+      border-radius: 40px;
+      border: 2px solid #2196f3;
+      cursor: pointer;
+      transition: 0.1s;
+    }
+    
+    .options-group label.selected {
+      background: #2196f3;
+      color: white;
+    }
+    
+    .options-group input[type="radio"] {
+      display: none;
     }
     
     .ans-input {
@@ -456,7 +481,7 @@
   <div class="footer-actions">
     <button id="exportBtn" style="background:#6c5ce7;">📎 导出错题</button>
     <button id="demoBtn" style="background:#ff9f4b;">🧪 添加示例错题</button>
-    <span style="flex:1; text-align:right; font-size:1rem; color:#4a4a4a;">🐼 快乐学几何 v2.0</span>
+    <span style="flex:1; text-align:right; font-size:1rem; color:#4a4a4a;">🐼 快乐学几何 v5.0</span>
   </div>
 </div>
 
@@ -484,115 +509,62 @@
     });
   }
 
-  // ========== SVG图形生成函数 ==========
+  // ========== SVG图形生成函数（正确画法） ==========
   const GeometrySVG = {
-    // 长方形
-    rectangle: (width = 100, height = 60) => `
-      <svg width="200" height="140" viewBox="0 0 200 140">
-        <rect x="30" y="30" width="${width}" height="${height}" 
-              fill="#4fc3f7" stroke="#ff8a65" stroke-width="3" rx="5"/>
-        <text x="20" y="25" font-size="14" fill="#333">A</text>
-        <text x="${width + 35}" y="25" font-size="14" fill="#333">B</text>
-        <text x="20" y="${height + 45}" font-size="14" fill="#333">D</text>
-        <text x="${width + 35}" y="${height + 45}" font-size="14" fill="#333">C</text>
+    // 圆锥体：母线实线，底面后半实线、前半虚线
+    cone: () => `
+      <svg width="200" height="200" viewBox="0 0 200 200">
+        <line x1="60" y1="150" x2="100" y2="40" stroke="#333" stroke-width="3"/>
+        <line x1="140" y1="150" x2="100" y2="40" stroke="#333" stroke-width="3"/>
+        <path d="M60,150 A40,15 0 0,1 140,150" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="4,4"/>
+        <path d="M60,150 A40,15 0 0,0 140,150" fill="none" stroke="#333" stroke-width="3"/>
+        <circle cx="100" cy="40" r="2" fill="red"/>
       </svg>
     `,
     
-    // 三角形
-    triangle: () => `
-      <svg width="200" height="160" viewBox="0 0 200 160">
-        <polygon points="100,30 170,130 30,130" 
-                 fill="#81c784" stroke="#ff8a65" stroke-width="3"/>
-        <text x="95" y="25" font-size="14">A</text>
-        <text x="175" y="125" font-size="14">B</text>
-        <text x="25" y="125" font-size="14">C</text>
+    // 圆柱体：上椭圆全实线，下椭圆上虚下实
+    cylinder: () => `
+      <svg width="200" height="200" viewBox="0 0 200 200">
+        <ellipse cx="100" cy="50" rx="50" ry="15" fill="none" stroke="#333" stroke-width="3"/>
+        <path d="M50,150 A50,15 0 0,1 150,150" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="4,4"/>
+        <path d="M50,150 A50,15 0 0,0 150,150" fill="none" stroke="#333" stroke-width="3"/>
+        <line x1="50" y1="50" x2="50" y2="150" stroke="#333" stroke-width="3"/>
+        <line x1="150" y1="50" x2="150" y2="150" stroke="#333" stroke-width="3"/>
       </svg>
     `,
     
-    // 直角三角形（30-60-90）
-    rightTriangle: () => `
-      <svg width="200" height="160" viewBox="0 0 200 160">
-        <polygon points="30,30 30,130 130,130" 
-                 fill="#ffd54f" stroke="#ff8a65" stroke-width="3"/>
-        <!-- 直角标记 -->
-        <path d="M30,110 L50,110 L50,130" fill="none" stroke="red" stroke-width="3"/>
-        <text x="25" y="25" font-size="14">A</text>
-        <text x="135" y="145" font-size="14">B</text>
-        <text x="25" y="145" font-size="14">C</text>
+    // 长方体：前面可见，后面虚线
+    cube: () => `
+      <svg width="220" height="200" viewBox="0 0 220 200">
+        <rect x="50" y="50" width="100" height="80" fill="none" stroke="#333" stroke-width="3"/>
+        <polygon points="50,50 100,20 200,20 150,50" fill="none" stroke="#333" stroke-width="3"/>
+        <polygon points="150,50 200,20 200,100 150,130" fill="none" stroke="#333" stroke-width="3"/>
+        <rect x="100" y="20" width="100" height="80" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+        <line x1="50" y1="130" x2="100" y2="100" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+        <line x1="150" y1="130" x2="200" y2="100" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
       </svg>
     `,
     
-    // 梯形
-    trapezoid: () => `
-      <svg width="220" height="160" viewBox="0 0 220 160">
-        <polygon points="50,30 170,30 200,130 20,130" 
-                 fill="#ff8a65" stroke="#4fc3f7" stroke-width="3"/>
-        <text x="45" y="25" font-size="14">A</text>
-        <text x="175" y="25" font-size="14">B</text>
-        <text x="205" y="145" font-size="14">C</text>
-        <text x="15" y="145" font-size="14">D</text>
-      </svg>
-    `,
-    
-    // 平行四边形
-    parallelogram: () => `
-      <svg width="220" height="160" viewBox="0 0 220 160">
-        <polygon points="50,30 170,30 190,130 70,130" 
-                 fill="#ba68c8" stroke="#ff8a65" stroke-width="3"/>
-        <text x="45" y="25" font-size="14">A</text>
-        <text x="175" y="25" font-size="14">B</text>
-        <text x="195" y="145" font-size="14">C</text>
-        <text x="65" y="145" font-size="14">D</text>
-      </svg>
-    `,
-    
-    // 圆形
-    circle: () => `
-      <svg width="180" height="180" viewBox="0 0 180 180">
-        <circle cx="90" cy="90" r="60" 
-                fill="#ffd54f" stroke="#ff8a65" stroke-width="3"/>
-        <text x="85" y="85" font-size="14">O</text>
-      </svg>
-    `,
-    
-    // 组合图形 - 三角形网格（用于计数题）
-    triangleGrid: () => `
-      <svg width="200" height="180" viewBox="0 0 200 180">
-        <!-- 大三角形 -->
-        <polygon points="100,30 170,150 30,150" fill="none" stroke="#ff8a65" stroke-width="3"/>
-        <!-- 中线 -->
-        <line x1="100" y1="30" x2="100" y2="150" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-        <!-- 水平分割线 -->
-        <line x1="50" y1="90" x2="150" y2="90" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-        <text x="95" y="25">A</text>
-        <text x="175" y="145">B</text>
-        <text x="25" y="145">C</text>
-      </svg>
-    `,
-    
-    // 长方形网格（用于面积题）
-    rectangleGrid: () => `
-      <svg width="220" height="160" viewBox="0 0 220 160">
-        <!-- 大长方形 -->
-        <rect x="30" y="30" width="160" height="100" fill="none" stroke="#ff8a65" stroke-width="3"/>
-        <!-- 分割线 -->
-        <line x1="83" y1="30" x2="83" y2="130" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-        <line x1="136" y1="30" x2="136" y2="130" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-        <line x1="30" y1="63" x2="190" y2="63" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-        <line x1="30" y1="96" x2="190" y2="96" stroke="#4fc3f7" stroke-dasharray="5,5"/>
+    // 球体：圆内一个椭圆，实线在上，虚线在下
+    sphere: () => `
+      <svg width="200" height="200" viewBox="0 0 200 200">
+        <circle cx="100" cy="100" r="80" fill="none" stroke="#333" stroke-width="3"/>
+        <path d="M20,100 A80,30 0 0,0 180,100" fill="none" stroke="#333" stroke-width="3"/>
+        <path d="M20,100 A80,30 0 0,1 180,100" fill="none" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+        <circle cx="100" cy="100" r="2" fill="red"/>
       </svg>
     `
   };
 
-  // ========== 基础题库模板（6类，含SVG） ==========
+  // ========== 基础题库模板（6类，文字描述为主） ==========
   const BASE_TEMPLATES = [
     {
       type: "平面图形认识",
       generate: () => {
         const questions = [
-          { text: "🔺 右边的图形是什么图形？", svg: GeometrySVG.triangle(), options: ["A. 长方形", "B. 三角形", "C. 圆形"], ans: "B" },
-          { text: "📐 右边的图形有几个角？", svg: GeometrySVG.rectangle(), options: ["A. 3个", "B. 4个", "C. 5个"], ans: "B" },
-          { text: "⚪ 右边的图形有几条边？", svg: GeometrySVG.circle(), options: ["A. 0条", "B. 1条", "C. 无数条"], ans: "A" }
+          { text: "🔺 三角形有____条边？ A. 2 B. 3 C. 4", ans: "B" },
+          { text: "⬛ 正方形有____个角？ A. 3 B. 4 C. 5", ans: "B" },
+          { text: "⚪ 圆有____个角？ A. 0 B. 1 C. 无数", ans: "A" }
         ];
         return questions[Math.floor(Math.random() * questions.length)];
       }
@@ -600,11 +572,10 @@
     {
       type: "周长计算",
       generate: () => {
-        const length = Math.floor(Math.random() * 4) + 5; // 5-8
-        const width = Math.floor(Math.random() * 3) + 3; // 3-5
+        const length = Math.floor(Math.random() * 4) + 5;
+        const width = Math.floor(Math.random() * 3) + 3;
         return {
-          text: `📏 右边长方形的长是${length}厘米，宽是${width}厘米，它的周长是多少厘米？`,
-          svg: GeometrySVG.rectangle(length * 10, width * 10),
+          text: `📏 一个长方形的长是${length}厘米，宽是${width}厘米，它的周长是多少厘米？`,
           ans: (length + width) * 2,
           childHint: `🤔 长方形周长 = (长 + 宽) × 2`,
           parentHint: `(${length} + ${width}) × 2 = ${(length + width) * 2}厘米`
@@ -614,10 +585,9 @@
     {
       type: "面积计算",
       generate: () => {
-        const side = Math.floor(Math.random() * 4) + 4; // 4-7
+        const side = Math.floor(Math.random() * 4) + 4;
         return {
-          text: `📐 右边正方形的边长是${side}厘米，它的面积是多少平方厘米？`,
-          svg: GeometrySVG.rectangle(side * 10, side * 10),
+          text: `📐 一个正方形的边长是${side}厘米，它的面积是多少平方厘米？`,
           ans: side * side,
           childHint: `🤔 正方形面积 = 边长 × 边长`,
           parentHint: `${side} × ${side} = ${side * side}平方厘米`
@@ -628,16 +598,9 @@
       type: "图形拼组",
       generate: () => {
         return {
-          text: `🧩 右边的两个完全相同的等腰直角三角形可以拼成什么图形？`,
-          svg: `
-            <svg width="200" height="120" viewBox="0 0 200 120">
-              <polygon points="30,20 80,20 30,70" fill="#81c784" stroke="#ff8a65" stroke-width="2"/>
-              <polygon points="100,20 150,70 100,70" fill="#81c784" stroke="#ff8a65" stroke-width="2"/>
-            </svg>
-          `,
-          options: ["A. 正方形", "B. 长方形", "C. 梯形"],
+          text: `🧩 两个完全相同的等腰直角三角形可以拼成什么图形？ A. 正方形 B. 长方形 C. 梯形`,
           ans: "A",
-          childHint: `🤔 等腰直角三角形的两个直角边相等，拼在一起会形成什么？`,
+          childHint: `🤔 等腰直角三角形的两个直角边相等，拼在一起会形成正方形`,
           parentHint: `两个等腰直角三角形可以拼成一个正方形`
         };
       }
@@ -646,17 +609,15 @@
       type: "角的初步认识",
       generate: () => {
         const angles = [
-          { svg: `<path d="M50,70 L50,20 L100,70" fill="none" stroke="#ff8a65" stroke-width="3"/>`, type: "锐角", ans: "A" },
-          { svg: `<path d="M50,20 L50,70 L100,70" fill="none" stroke="#ff8a65" stroke-width="3"/>`, type: "直角", ans: "B" },
-          { svg: `<path d="M30,70 L50,20 L100,70" fill="none" stroke="#ff8a65" stroke-width="3"/>`, type: "钝角", ans: "C" }
+          { desc: "小于90°", type: "锐角", ans: "A" },
+          { desc: "等于90°", type: "直角", ans: "B" },
+          { desc: "大于90°", type: "钝角", ans: "C" }
         ];
         const q = angles[Math.floor(Math.random() * angles.length)];
         return {
-          text: `📐 右边的角是什么角？`,
-          svg: `<svg width="150" height="100" viewBox="0 0 150 100">${q.svg}</svg>`,
-          options: ["A. 锐角", "B. 直角", "C. 钝角"],
+          text: `📐 ${q.desc}的角是什么角？ A. 锐角 B. 直角 C. 钝角`,
           ans: q.ans,
-          childHint: `🤔 小于90°是锐角，等于90°是直角，大于90°是钝角`,
+          childHint: `🤔 锐角<90°，直角=90°，钝角>90°`,
           parentHint: `这是一个${q.type}`
         };
       }
@@ -664,34 +625,30 @@
     {
       type: "立体图形认识",
       generate: () => {
-        return {
-          text: `🧊 右边的图形是什么形状？`,
-          svg: `
-            <svg width="120" height="120" viewBox="0 0 120 120">
-              <rect x="30" y="30" width="60" height="60" fill="#4fc3f7" stroke="#ff8a65" stroke-width="3"/>
-              <rect x="20" y="20" width="60" height="60" fill="none" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-              <line x1="90" y1="30" x2="80" y2="20" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-              <line x1="90" y1="90" x2="80" y2="80" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-              <line x1="30" y1="90" x2="20" y2="80" stroke="#4fc3f7" stroke-dasharray="5,5"/>
-            </svg>
-          `,
-          options: ["A. 长方体", "B. 正方体", "C. 圆柱"],
-          ans: "B",
-          childHint: `🤔 正方体的所有面都是正方形，且大小相等`,
-          parentHint: `这是一个正方体`
-        };
+        const questions = [
+          { text: "🧊 魔方是什么形状？ A. 长方体 B. 正方体 C. 圆柱", ans: "B" },
+          { text: "🧊 足球是什么形状？ A. 长方体 B. 正方体 C. 球", ans: "C" },
+          { text: "🥫 易拉罐是什么形状？ A. 圆柱 B. 圆锥 C. 球", ans: "A" }
+        ];
+        return questions[Math.floor(Math.random() * questions.length)];
       }
     }
   ];
 
-  // ========== 奥数题库模板（8类，含SVG） ==========
+  // ========== 奥数题库模板（8类，需要图形时使用SVG） ==========
   const OLYMPIC_TEMPLATES = [
     {
       type: "等积变换",
       generate: () => {
         return {
-          text: `📐 右边三角形ABC中，D是BC中点，E是AC中点，三角形ADE的面积是整个三角形面积的几分之几？`,
-          svg: GeometrySVG.triangleGrid(),
+          text: `📐 下图中，D是BC中点，E是AC中点，三角形ADE的面积是整个三角形面积的几分之几？`,
+          svg: `
+            <svg width="200" height="180" viewBox="0 0 200 180">
+              <polygon points="100,30 170,150 30,150" fill="none" stroke="#ff8a65" stroke-width="3"/>
+              <line x1="100" y1="30" x2="100" y2="150" stroke="#4fc3f7" stroke-dasharray="5,5"/>
+              <line x1="50" y1="90" x2="150" y2="90" stroke="#4fc3f7" stroke-dasharray="5,5"/>
+            </svg>
+          `,
           options: ["A. 1/2", "B. 1/4", "C. 1/8"],
           ans: "B",
           childHint: `🤔 连接中点，三角形面积被等分成4份`,
@@ -703,12 +660,16 @@
       type: "几何模型应用",
       generate: () => {
         return {
-          text: `🦋 右边梯形ABCD中，AD∥BC，对角线交于O，三角形AOD面积是5，三角形COB面积是20，梯形面积是多少？`,
-          svg: GeometrySVG.trapezoid(),
+          text: `🦋 下图中，AD∥BC，对角线交于O，三角形AOD面积是5，三角形COB面积是20，梯形面积是多少？`,
+          svg: `
+            <svg width="220" height="160" viewBox="0 0 220 160">
+              <polygon points="50,30 170,30 200,130 20,130" fill="none" stroke="#ff8a65" stroke-width="3"/>
+            </svg>
+          `,
           options: ["A. 45", "B. 40", "C. 35"],
           ans: "A",
           childHint: `🤔 蝴蝶模型中，左右两个三角形面积相等`,
-          parentHint: `S△AOB=S△COD=√(5×20)=10，总面积=5+20+10+10=45`
+          parentHint: `S△AOB=S△COD=10，总面积=5+20+10+10=45`
         };
       }
     },
@@ -716,8 +677,15 @@
       type: "格点与面积",
       generate: () => {
         return {
-          text: `🔲 右边图形内部格点3个，边上格点6个，面积是多少？（皮克定理）`,
-          svg: GeometrySVG.rectangleGrid(),
+          text: `🔲 下图内部格点3个，边上格点6个，面积是多少？（皮克定理）`,
+          svg: `
+            <svg width="200" height="160" viewBox="0 0 200 160">
+              <polygon points="30,30 170,30 150,130 50,130" fill="none" stroke="#ff8a65" stroke-width="3"/>
+              <circle cx="80" cy="60" r="3" fill="red"/>
+              <circle cx="120" cy="60" r="3" fill="red"/>
+              <circle cx="100" cy="90" r="3" fill="red"/>
+            </svg>
+          `,
           options: ["A. 5", "B. 6", "C. 7"],
           ans: "B",
           childHint: `🤔 面积 = 内部格点数 + 边上格点数÷2 - 1`,
@@ -729,8 +697,7 @@
       type: "圆与扇形",
       generate: () => {
         return {
-          text: `⚪ 右边圆的半径是4厘米，它的周长是多少厘米？（π取3.14）`,
-          svg: GeometrySVG.circle(),
+          text: `⚪ 一个圆的半径是4厘米，它的周长是多少厘米？（π取3.14）`,
           ans: 25.12,
           childHint: `🤔 圆周长 = 2πr`,
           parentHint: `2 × 3.14 × 4 = 25.12厘米`
@@ -741,21 +708,11 @@
       type: "立体图形进阶",
       generate: () => {
         return {
-          text: `🧊 右边长方体长5、宽4、高3，表面涂色后切成1立方厘米的小正方体，三面涂色的有几个？`,
-          svg: `
-            <svg width="150" height="120" viewBox="0 0 150 120">
-              <rect x="30" y="30" width="50" height="40" fill="#4fc3f7" stroke="#ff8a65" stroke-width="2"/>
-              <rect x="20" y="20" width="50" height="40" fill="none" stroke="#4fc3f7" stroke-dasharray="3"/>
-              <line x1="80" y1="30" x2="70" y2="20" stroke="#4fc3f7" stroke-dasharray="3"/>
-              <text x="60" y="15">3</text>
-              <text x="95" y="45">5</text>
-              <text x="45" y="85">4</text>
-            </svg>
-          `,
-          options: ["A. 4", "B. 8", "C. 12"],
-          ans: "B",
-          childHint: `🤔 三面涂色的是顶点处的小方块`,
-          parentHint: `长方体有8个顶点，每个顶点处有1个三面涂色，共8个`
+          text: `🧊 下图是一个圆锥，底面半径3厘米，高5厘米，它的体积是多少立方厘米？`,
+          svg: GeometrySVG.cone(),
+          ans: Math.round(3.14 * 3 * 3 * 5 / 3 * 100) / 100,
+          childHint: `🤔 圆锥体积 = 1/3 × 底面积 × 高`,
+          parentHint: `3.14 × 3² × 5 ÷ 3 = 47.1立方厘米`
         };
       }
     },
@@ -763,7 +720,7 @@
       type: "图形分割与拼补",
       generate: () => {
         return {
-          text: `🧩 右边正方形边长8，阴影部分的面积是多少？`,
+          text: `🧩 下图正方形边长8，阴影部分的面积是多少？`,
           svg: `
             <svg width="160" height="160" viewBox="0 0 160 160">
               <rect x="30" y="30" width="100" height="100" fill="none" stroke="#ff8a65" stroke-width="3"/>
@@ -781,7 +738,7 @@
       type: "正方体展开图",
       generate: () => {
         return {
-          text: `📦 右边的图形可以折叠成正方体吗？`,
+          text: `📦 下图可以折叠成正方体吗？`,
           svg: `
             <svg width="200" height="180" viewBox="0 0 200 180">
               <rect x="50" y="20" width="40" height="40" fill="#ff8a65" stroke="#333" stroke-width="2"/>
@@ -794,7 +751,7 @@
           options: ["A. 可以", "B. 不可以"],
           ans: "A",
           childHint: `🤔 这是1-4-1型展开图，可以折叠成正方体`,
-          parentHint: `是的，这是标准的1-4-1型正方体展开图`
+          parentHint: `这是标准的1-4-1型正方体展开图`
         };
       }
     },
@@ -802,11 +759,17 @@
       type: "几何计数",
       generate: () => {
         return {
-          text: `🔢 右边的图形中共有几个三角形？`,
-          svg: GeometrySVG.triangleGrid(),
+          text: `🔢 下图中共有几个三角形？`,
+          svg: `
+            <svg width="200" height="180" viewBox="0 0 200 180">
+              <polygon points="100,30 170,150 30,150" fill="none" stroke="#ff8a65" stroke-width="3"/>
+              <line x1="100" y1="30" x2="100" y2="150" stroke="#4fc3f7" stroke-dasharray="5,5"/>
+              <line x1="50" y1="90" x2="150" y2="90" stroke="#4fc3f7" stroke-dasharray="5,5"/>
+            </svg>
+          `,
           options: ["A. 6个", "B. 8个", "C. 10个"],
           ans: "B",
-          childHint: `🤔 先数单个小三角形，再数由2个、4个小三角形组成的三角形`,
+          childHint: `🤔 先数单个小三角形，再数组合的`,
           parentHint: `单个4个 + 2个组成的2个 + 4个组成的2个 = 8个`
         };
       }
@@ -947,12 +910,17 @@
 
         const inputDisabled = (!this.active && this.secondsLeft <= 0) || this.submitted ? 'disabled' : '';
         
-        // 生成选项HTML
         let optionsHtml = '';
-        if (q.options) {
-          optionsHtml = '<div style="margin:10px 0;">';
+        if (q.options && q.options.length > 0) {
+          optionsHtml = '<div class="options-group">';
           q.options.forEach((opt, i) => {
-            optionsHtml += `<label style="margin-right:20px;"><input type="radio" name="opt_${idx}" value="${String.fromCharCode(65+i)}"> ${opt}</label>`;
+            const letter = String.fromCharCode(65 + i);
+            optionsHtml += `
+              <label>
+                <input type="radio" name="opt_${idx}" value="${letter}" ${q.userAnswer === letter ? 'checked' : ''}>
+                ${opt}
+              </label>
+            `;
           });
           optionsHtml += '</div>';
         }
@@ -965,14 +933,14 @@
           ${q.svg ? `<div class="geometry-svg">${q.svg}</div>` : ''}
           <div class="answer-area">
             ${optionsHtml}
-            <input class="ans-input" type="text" id="ans_${idx}" placeholder="输入答案" value="${q.userAnswer||''}" ${inputDisabled}>
+            <input class="ans-input" type="text" id="ans_${idx}" placeholder="输入答案" value="${q.userAnswer || ''}" ${inputDisabled}>
             <span class="result-badge ${statusClass}">${statusText}</span>
           </div>
           ${q.isCorrect !== null ? `
           <div class="hint-section">
-            <div class="child-hint">${q.childHint}</div>
+            <div class="child-hint">${q.childHint || '🤔 再想想'}</div>
             <button class="parent-btn" onclick="toggleParentHint(${idx})">🔍 家长查看解析</button>
-            <div class="parent-hint hidden" id="parentHint_${idx}">📝 ${q.parentHint}</div>
+            <div class="parent-hint hidden" id="parentHint_${idx}">📝 ${q.parentHint || '暂无解析'}</div>
           </div>
           ` : ''}
         </div>`;
@@ -982,7 +950,6 @@
 
     submitAll: function() {
       this.currentQuestions.forEach((q, idx) => {
-        // 获取选项输入
         const radioButtons = document.getElementsByName(`opt_${idx}`);
         let selectedOption = '';
         for (let rb of radioButtons) {
@@ -1084,7 +1051,7 @@
         ans: 5,
         mainCat: "奥数题",
         subCat: "勾股定理",
-        childHint: "🤔 直角三角形两直角边的平方和等于斜边的平方",
+        childHint: "🤔 两直角边的平方和等于斜边的平方",
         parentHint: "3² + 4² = 9 + 16 = 25，√25 = 5"
       });
     },
